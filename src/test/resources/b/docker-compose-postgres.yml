@@ -1,0 +1,30 @@
+version: '3.8'
+
+networks:
+  default:
+    name: ${NETWORK_NAME}
+
+x-volumes: &postgres-volumes
+  - ../../../../../testcontainers-sandbox-volumes/postgres/:/var/lib/postgresql/data/:rw
+
+services:
+  postgres:
+    hostname: ${POSTGRES_HOST}
+    image: ${POSTGRES_IMAGE}
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: ${POSTGRES_MEMORY_LIMIT}
+    volumes: *postgres-volumes
+    ports:
+      - '5432:5432'
+    healthcheck:
+      test:
+        [ 'CMD-SHELL', '${POSTGRES_HEALTHCHECK_CMD}' ]
+      interval: 5s
+      timeout: 60s
+      retries: 100
+      start_period: 10s
+    env_file:
+      - '.env'

@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  postgres:
+    extends:
+      file: docker-compose.yml
+      service: postgres
+    container_name: ${POSTGRES}-${DEBUG}
+    ports:
+      - '5432:5432'
+  pgadmin:
+    extends:
+      file: docker-compose.yml
+      service: pgadmin
+    container_name: ${PGADMIN}-${DEBUG}
+    ports:
+      - '5050:5050'
