@@ -1,22 +1,26 @@
 version: '3.8'
 
 networks:
-  default:
-    name: ${NETWORK_NAME}
+  multiple-compose:
 
 x-volumes: &postgres-volumes
-  - ../../../../../testcontainers-sandbox-volumes/postgres/:/var/lib/postgresql/data/:rw
+  - ${HOME}/docker-volumes/testcontainers-sandbox/postgres/:/var/lib/postgresql/data/:rw
 
 services:
   postgres:
     hostname: ${POSTGRES_HOST}
     image: ${POSTGRES_IMAGE}
     restart: unless-stopped
+    # PostgreSQL empty DB initialization only pass with root user credentials. 
+    # If you need a root-less container (as more secure, to directly access database files without repetitive chown, to store database files on a network drive), initialize a root'ed one, stop, chown volume to UID/GID 10001, uncomment line below and restart container
+    #user: ${DUMMY_UID}:${DUMMY_UID}
     deploy:
       resources:
         limits:
           memory: ${POSTGRES_MEMORY_LIMIT}
     volumes: *postgres-volumes
+    networks:
+      - multiple-compose
     ports:
       - '5432:5432'
     healthcheck:

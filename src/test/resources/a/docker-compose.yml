@@ -1,8 +1,7 @@
 version: '3.8'
 
 networks:
-  default:
-    name: ${NETWORK_NAME}
+  single-compose:
 
 x-def-env: &def-env
  DEF: def
@@ -10,18 +9,23 @@ x-ghi-env: &ghi-env
  GHI: ghi
 
 x-volumes: &postgres-volumes
-  - ../../../../../testcontainers-sandbox-volumes/postgres/:/var/lib/postgresql/data/:rw
+  - ${HOME}/docker-volumes/testcontainers-sandbox/postgres/:/var/lib/postgresql/data/:rw
 
 services:
   postgres:
     hostname: ${POSTGRES_HOST}
     image: ${POSTGRES_IMAGE}
     restart: unless-stopped
+    # PostgreSQL empty DB initialization only pass with root user credentials. 
+    # If you need a root-less container (as more secure, to directly access database files without repetitive chown, to store database files on a network drive), initialize a root'ed one, stop, chown volume to UID/GID 10001, uncomment line below and restart container
+    #user: ${DUMMY_UID}:${DUMMY_UID}
     deploy:
       resources:
         limits:
           memory: ${POSTGRES_MEMORY_LIMIT}
     volumes: *postgres-volumes
+    networks:
+      - single-compose
     ports:
       - '5432'
     healthcheck:
@@ -45,8 +49,10 @@ services:
       resources:
         limits:
           memory: ${PGADMIN_MEMORY_LIMIT}
+    networks:
+      - single-compose
     ports:
-      - '5050:5050'
+      - '5050'
     healthcheck:
       test:
         [ 'CMD-SHELL', '${PGADMIN_HEALTHCHECK_CMD}' ]
@@ -55,5 +61,19 @@ services:
       retries: 100
       start_period: 60s
     environment: *ghi-env
+    env_file:
+      - '.env'
+  adminer:
+    hostname: ${ADMINER_HOST}
+    image: ${ADMINER_IMAGE}
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: ${ADMINER_MEMORY_LIMIT}
+    networks:
+      - single-compose
+    ports:
+      - '8080'
     env_file:
       - '.env'

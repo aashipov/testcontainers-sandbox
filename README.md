@@ -5,7 +5,13 @@
 Linux host with cgroups v1 enabled, system-wide docker, user-wide docker-compose, portainer
 
 ```shell
-mvn clean package
+mvn clean test
+```
+
+or
+
+```shell
+gradle clean test
 ```
 
 ```shell

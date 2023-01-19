@@ -1,0 +1,12 @@
+version: '3.8'
+
+# docker-compose -f docker-compose-alpine-shell.yml run --rm alpine-shell
+
+services:
+  alpine-shell:
+    image: ${ALPINE_IMAGE}
+    hostname: ${ALPINE_HOST}
+    container_name: ${ALPINE_HOST}
+    user: ${DUMMY_UID}:${DUMMY_UID}
+    volumes:
+      - ${HOME}/docker-volumes/alpine-shell/:/alpine-shell/:rw

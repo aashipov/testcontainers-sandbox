@@ -1,4 +1,7 @@
-version: '3.8'
+version: '3'
+
+networks:
+  single-compose:
 
 services:
   postgres:
@@ -7,11 +10,11 @@ services:
       service: postgres
     container_name: ${POSTGRES}-${DEBUG}
     ports:
-      - '5432:5432'
+      - 5432:5432
   pgadmin:
     extends:
       file: docker-compose.yml
       service: pgadmin
     container_name: ${PGADMIN}-${DEBUG}
     ports:
-      - '5050:5050'
+      - 5050:5050

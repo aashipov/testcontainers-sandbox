@@ -1,0 +1,12 @@
+version: '3.8'
+
+# docker-compose -f docker-compose-centos-shell.yml run --rm centos-shell
+
+services:
+  centos-shell:
+    image: ${CENTOS_IMAGE}
+    hostname: ${CENTOS_HOST}
+    container_name: ${CENTOS_HOST}
+    #user: ${DUMMY_UID}:${DUMMY_UID}
+    volumes:
+      - ${HOME}/docker-volumes/centos-shell/:/centos-shell/:rw
